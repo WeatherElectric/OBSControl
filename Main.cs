@@ -1,5 +1,6 @@
 ﻿namespace WeatherElectric.OBSControl;
 
+/// <inheritdoc />
 public class Main : MelonMod
 {
     internal const string Name = "OBSControl";
@@ -8,22 +9,26 @@ public class Main : MelonMod
     internal const string Company = "Weather Electric";
     internal const string Version = "0.0.1";
     internal const string DownloadLink = null;
-    
+
+    /// <inheritdoc />
     public override void OnInitializeMelon()
     {
         ModConsole.Setup(LoggerInstance);
         Preferences.Setup();
         ObsBridge.Connect();
+        ObsBridge.InitHooks();
         Hooking.OnLevelInitialized += OnLevelLoaded;
         Hooking.OnLevelUnloaded += OnLevelUnloaded;
     }
-    
+
+    /// <inheritdoc />
     public override void OnLateInitializeMelon()
     {
         // i want this to be called late to give OBS time to connect, since the bonemenu setup method uses OBS
         BoneMenu.Setup();
     }
-    
+
+    /// <inheritdoc />
     public override void OnApplicationQuit()
     {
         ObsBridge.Disconnect();
@@ -40,7 +45,8 @@ public class Main : MelonMod
     {
         _rigExists = false;
     }
-    
+
+    /// <inheritdoc />
     public override void OnUpdate()
     {
         if (!_rigExists) return;

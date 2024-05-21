@@ -56,14 +56,6 @@
             <HintPath>Refs\obs-websocket-dotnet.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="SLZ.Marrow">
-            <HintPath>Links\MelonLoader\Managed\SLZ.Marrow.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="SLZ.Marrow.SDK">
-            <HintPath>Links\MelonLoader\Managed\SLZ.Marrow.SDK.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
         <Reference Include="UnhollowerBaseLib">
             <HintPath>Links\MelonLoader\Managed\UnhollowerBaseLib.dll</HintPath>
             <Private>false</Private>
@@ -89,6 +81,7 @@
     <PropertyGroup>
         <PostBuildEvent>COPY "$(TargetPath)" "$(SolutionDir)\Links\Mods"
             COPY "$(TargetPath)" "$(SolutionDir)Staging\Mods"
-COPY "$(TargetDir)OBSControl.xml" "$(SolutionDir)Staging\Mods"</PostBuildEvent>
+COPY "$(TargetDir)OBSControl.xml" "$(SolutionDir)Staging\Mods"
+COPY "$(SolutionDir)README.md" "$(SolutionDir)Staging"</PostBuildEvent>
     </PropertyGroup>
 </Project>

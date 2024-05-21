@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using OBSWebsocketDotNet.Types.Events;

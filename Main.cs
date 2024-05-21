@@ -8,7 +8,9 @@ public class Main : MelonMod
     internal const string Author = "SoulWithMae";
     internal const string Company = "Weather Electric";
     internal const string Version = "0.0.1";
-    internal const string DownloadLink = null;
+    internal const string DownloadLink = "https://thunderstore.io/c/bonelab/p/SoulWithMae/OBSControl/";
+    
+    private static bool _rigExists;
 
     /// <inheritdoc />
     public override void OnInitializeMelon()
@@ -33,8 +35,13 @@ public class Main : MelonMod
     {
         ObsBridge.Disconnect();
     }
-
-    private static bool _rigExists;
+    
+    /// <inheritdoc />
+    public override void OnUpdate()
+    {
+        if (!_rigExists) return;
+        ControlHandler.Update();
+    }
 
     private static void OnLevelLoaded(LevelInfo levelInfo)
     {
@@ -44,12 +51,5 @@ public class Main : MelonMod
     private static void OnLevelUnloaded()
     {
         _rigExists = false;
-    }
-
-    /// <inheritdoc />
-    public override void OnUpdate()
-    {
-        if (!_rigExists) return;
-        ControlHandler.Update();
     }
 }

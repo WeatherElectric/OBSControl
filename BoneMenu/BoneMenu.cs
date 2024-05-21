@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OBSWebsocketDotNet.Types.Events;
+﻿using OBSWebsocketDotNet.Types.Events;
 using UnityEngine.Diagnostics;
 using WeatherElectric.OBSControl.Handlers;
 

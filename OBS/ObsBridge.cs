@@ -99,8 +99,6 @@ public static class ObsBridge
         Obs.SceneRemoved += SceneRemoved;
     }
     
-
-    
     #endregion
     
     #region Public
@@ -166,6 +164,15 @@ public static class ObsBridge
     #endregion
     
     #region Statuses
+    
+    /// <summary>
+    /// Check if OBS websocket is connected.
+    /// </summary>
+    /// <returns>True if connected, false if disconnected</returns>
+    public static bool IsConnected()
+    {
+        return Obs.IsConnected;
+    }
 
     /// <summary>
     /// Get the recording status of OBS.

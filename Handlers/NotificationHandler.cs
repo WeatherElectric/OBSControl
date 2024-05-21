@@ -1,8 +1,8 @@
 using BoneLib.Notifications;
 
-namespace WeatherElectric.OBSControl;
+namespace WeatherElectric.OBSControl.Handlers;
 
-internal static class Notifications
+internal static class NotificationHandler
 {
     public static void SendNotif(Notification notification)
     {
@@ -11,6 +11,9 @@ internal static class Notifications
             Notifier.Send(notification);
         }
     }
+    
+    #region Notifications
+    
     public static Notification RecordingStarted { get; } = new()
     {
         Title = "Recording Started",
@@ -91,4 +94,6 @@ internal static class Notifications
         PopupLength = 1f,
         ShowTitleOnPopup = true
     };
+    
+    #endregion
 }

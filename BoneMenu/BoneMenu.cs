@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using OBSWebsocketDotNet.Types.Events;
+using UnityEngine.Diagnostics;
+using WeatherElectric.OBSControl.Handlers;
 
 namespace WeatherElectric.OBSControl.Menu;
 
 internal static class BoneMenu
 {
+    private static MenuCategory _subCat;
     private static FunctionElement _recordButton;
     private static FunctionElement _pauseButton;
     private static FunctionElement _streamButton;
@@ -14,25 +17,43 @@ internal static class BoneMenu
     private static readonly Dictionary<string, FunctionElement> SceneButtons = [];
     
     
-    public static void Setup()
+    public static void SetupBaseMenu()
     {
         MenuCategory mainCat = MenuManager.CreateCategory("Weather Electric", "#6FBDFF");
-        MenuCategory subCat = mainCat.CreateCategory("OBSControl", Color.blue);
+        _subCat = mainCat.CreateCategory("OBSControl", Color.blue);
+        CheckIfConnected();
+    }
+
+    private static void CheckIfConnected()
+    {
+        if (!ObsBridge.IsConnected())
+        {
+            _subCat.CreateFunctionElement("OBS is not connected! Restart the game with OBS open!", Color.red, () =>
+            {
+                Utils.ForceCrash(ForcedCrashCategory.Abort);
+            }, "This will crash the game intentionally to close the game!");
+            return;
+        }
         
+        SetupObsControls();
+    }
+
+    private static void SetupObsControls()
+    {
         #region Recording
         
-        SubPanelElement recordPanel = subCat.CreateSubPanel("Record", Color.green);
+        SubPanelElement recordPanel = _subCat.CreateSubPanel("Record", Color.green);
         _recordButton = recordPanel.CreateFunctionElement("Record Button", Color.green, () =>
         {
             switch (ObsBridge.IsRecording())
             {
                 case true:
                     ObsBridge.StopRecording();
-                    Notifications.SendNotif(Notifications.RecordingStopped);
+                    NotificationHandler.SendNotif(NotificationHandler.RecordingStopped);
                     break;
                 case false:
                     ObsBridge.StartRecording();
-                    Notifications.SendNotif(Notifications.RecordingStarted);
+                    NotificationHandler.SendNotif(NotificationHandler.RecordingStarted);
                     break;
             }
         });
@@ -43,11 +64,11 @@ internal static class BoneMenu
             {
                 case true:
                     ObsBridge.ResumeRecording();
-                    Notifications.SendNotif(Notifications.RecordingResumed);
+                    NotificationHandler.SendNotif(NotificationHandler.RecordingResumed);
                     break;
                 case false:
                     ObsBridge.PauseRecording();
-                    Notifications.SendNotif(Notifications.RecordingPaused);
+                    NotificationHandler.SendNotif(NotificationHandler.RecordingPaused);
                     break;
             }
         });
@@ -57,18 +78,18 @@ internal static class BoneMenu
         
         #region Streaming
         
-        SubPanelElement streamPanel = subCat.CreateSubPanel("Stream", Color.blue);
+        SubPanelElement streamPanel = _subCat.CreateSubPanel("Stream", Color.blue);
         _streamButton = streamPanel.CreateFunctionElement("Stream Button", Color.blue, () =>
         {
             switch (ObsBridge.IsStreaming())
             {
                 case true:
                     ObsBridge.StopStreaming();
-                    Notifications.SendNotif(Notifications.StreamStopped);
+                    NotificationHandler.SendNotif(NotificationHandler.StreamStopped);
                     break;
                 case false:
                     ObsBridge.StartStreaming();
-                    Notifications.SendNotif(Notifications.StreamStarted);
+                    NotificationHandler.SendNotif(NotificationHandler.StreamStarted);
                     break;
             }
         });
@@ -78,18 +99,18 @@ internal static class BoneMenu
         
         #region Replay
         
-        SubPanelElement replayPanel = subCat.CreateSubPanel("Replay", Color.yellow);
+        SubPanelElement replayPanel = _subCat.CreateSubPanel("Replay", Color.yellow);
         _replayButton = replayPanel.CreateFunctionElement("Replay Button", Color.blue, () =>
         {
             switch (ObsBridge.IsReplayBufferActive())
             {
                 case true:
                     ObsBridge.StopReplayBuffer();
-                    Notifications.SendNotif(Notifications.ReplayBufferStopped);
+                    NotificationHandler.SendNotif(NotificationHandler.ReplayBufferStopped);
                     break;
                 case false:
                     ObsBridge.StartReplayBuffer();
-                    Notifications.SendNotif(Notifications.ReplayBufferStarted);
+                    NotificationHandler.SendNotif(NotificationHandler.ReplayBufferStarted);
                     break;
             }
         });
@@ -97,14 +118,14 @@ internal static class BoneMenu
         replayPanel.CreateFunctionElement("Save Replay", Color.blue, () =>
         {
             ObsBridge.SaveReplayBuffer();
-            Notifications.SendNotif(Notifications.ReplaySaved);
+            NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
         });
         
         #endregion
         
         #region Scenes
         
-        _scenesPanel = subCat.CreateSubPanel("Scenes", Color.red);
+        _scenesPanel = _subCat.CreateSubPanel("Scenes", Color.red);
         var scenes = ObsBridge.GetScenes();
         foreach (var scene in scenes)
         {
@@ -119,7 +140,7 @@ internal static class BoneMenu
         
         #region Settings
         
-        SubPanelElement settingsPanel = subCat.CreateSubPanel("Settings", Color.gray);
+        SubPanelElement settingsPanel = _subCat.CreateSubPanel("Settings", Color.gray);
         settingsPanel.CreateBoolPreference("Show Notifications", Color.white, Preferences.ShowNotifications, Preferences.OwnCategory);
         settingsPanel.CreateEnumPreference("Replay Control Mode", Color.white, Preferences.ReplayControlMode, Preferences.OwnCategory);
         settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand, Preferences.OwnCategory);
@@ -164,8 +185,7 @@ internal static class BoneMenu
     
     private static void SceneDeleted(object sender, SceneRemovedEventArgs e)
     {
-        var func = SceneButtons[e.SceneName];
-        _scenesPanel.RemoveElement(func);
+        _scenesPanel.RemoveElement(SceneButtons[e.SceneName]);
         SceneButtons.Remove(e.SceneName);
     }
     

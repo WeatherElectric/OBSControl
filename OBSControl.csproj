@@ -76,8 +76,9 @@
     <ItemGroup>
         <Compile Include="BoneMenu\BoneMenu.cs"/>
         <Compile Include="BoneMenu\BoneMenuExtensions.cs"/>
-        <Compile Include="Notifications.cs" />
         <Compile Include="GlobalUsings.cs"/>
+        <Compile Include="Handlers\ControlHandler.cs" />
+        <Compile Include="Handlers\NotificationHandler.cs" />
         <Compile Include="Main.cs"/>
         <Compile Include="Melon\ModConsole.cs"/>
         <Compile Include="Melon\Preferences.cs"/>

@@ -46,6 +46,9 @@
         <Reference Include="MelonLoader">
             <HintPath>Links\MelonLoader\MelonLoader.dll</HintPath>
         </Reference>
+        <Reference Include="obs-websocket-dotnet">
+          <HintPath>Resources\obs-websocket-dotnet.dll</HintPath>
+        </Reference>
         <Reference Include="SLZ.Marrow">
             <HintPath>Links\MelonLoader\Managed\SLZ.Marrow.dll</HintPath>
         </Reference>
@@ -62,12 +65,18 @@
     <ItemGroup>
         <Compile Include="BoneMenu\BoneMenu.cs"/>
         <Compile Include="BoneMenu\BoneMenuExtensions.cs"/>
+        <Compile Include="Notifications.cs" />
+        <Compile Include="OBS\ObsBridge.cs" />
         <Compile Include="GlobalUsings.cs"/>
         <Compile Include="Main.cs"/>
         <Compile Include="Melon\ModConsole.cs"/>
         <Compile Include="Melon\Preferences.cs"/>
         <Compile Include="Melon\UserData.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\obs-websocket-dotnet.dll" />
+      <EmbeddedResource Include="Resources\WatsonWebsocket.dll" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <PropertyGroup>

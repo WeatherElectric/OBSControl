@@ -4,19 +4,21 @@ namespace WeatherElectric.OBSControl.Melon;
 
 internal static class UserData
 {
-    private static readonly string WeatherElectricPath = Path.Combine(MelonUtils.UserDataDirectory, "Weather Electric");
-    private static readonly string ModPath = Path.Combine(MelonUtils.UserDataDirectory, "Weather Electric/OBSControl");
-
+    private static string ObsWebSocketPath => Path.Combine(MelonUtils.UserDataDirectory, "obs-websocket.dll");
+    private static string WatsonWebsocketPath => Path.Combine(MelonUtils.UserDataDirectory, "WatsonWebsocket.dll");
+    
     public static void Setup()
     {
-        if (!Directory.Exists(WeatherElectricPath))
+        if (!File.Exists(ObsWebSocketPath))
         {
-            Directory.CreateDirectory(WeatherElectricPath);
+            var bytes = HelperMethods.GetResourceBytes(Main.ModAsm, "WeatherElectric.OBSControl.Resources.obs-websocket.dll");
+            File.WriteAllBytes(ObsWebSocketPath, bytes);
         }
-
-        if (!Directory.Exists(ModPath))
+        
+        if (!File.Exists(WatsonWebsocketPath))
         {
-            Directory.CreateDirectory(ModPath);
+            var bytes = HelperMethods.GetResourceBytes(Main.ModAsm, "WeatherElectric.OBSControl.Resources.WatsonWebsocket.dll");
+            File.WriteAllBytes(WatsonWebsocketPath, bytes);
         }
     }
 }

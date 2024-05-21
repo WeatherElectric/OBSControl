@@ -19,7 +19,7 @@ internal static class BoneMenu
     public static void SetupBaseMenu()
     {
         MenuCategory mainCat = MenuManager.CreateCategory("Weather Electric", "#6FBDFF");
-        _subCat = mainCat.CreateCategory("OBSControl", Color.blue);
+        _subCat = mainCat.CreateCategory("OBSControl", "#284cb8");
         CheckIfConnected();
     }
 

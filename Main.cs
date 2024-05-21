@@ -9,14 +9,13 @@ public class Main : MelonMod
     internal const string Version = "0.0.1";
     internal const string DownloadLink = null;
     
-    internal static Assembly ModAsm => Assembly.GetExecutingAssembly();
-
     public override void OnInitializeMelon()
     {
         ModConsole.Setup(LoggerInstance);
         Preferences.Setup();
-        UserData.Setup();
         ObsBridge.Connect();
+        Hooking.OnLevelInitialized += OnLevelLoaded;
+        Hooking.OnLevelUnloaded += OnLevelUnloaded;
     }
     
     public override void OnLateInitializeMelon()
@@ -25,8 +24,26 @@ public class Main : MelonMod
         BoneMenu.Setup();
     }
     
+    public override void OnApplicationQuit()
+    {
+        ObsBridge.Disconnect();
+    }
+
+    private static bool _rigExists;
+
+    private static void OnLevelLoaded(LevelInfo levelInfo)
+    {
+        _rigExists = true;
+    }
+
+    private static void OnLevelUnloaded()
+    {
+        _rigExists = false;
+    }
+    
     public override void OnUpdate()
     {
+        if (!_rigExists) return;
         switch (Preferences.ReplayControlMode.Value)
         {
             case ControlMode.Touchpad:
@@ -46,22 +63,21 @@ public class Main : MelonMod
     
     private void Touchpad()
     {
-        if (Player.rightController._touchPad)
+        switch (Preferences.ReplayControlHand.Value)
         {
-            if (!_isFirstTap)
-            {
-                _isFirstTap = true;
-                _doubleTapTimer = 0;
-            }
-            else
-            {
-                if (_doubleTapTimer < DoubleTapTime)
-                {
-                    ObsBridge.SaveReplayBuffer();
-                    _isFirstTap = false;
-                }
-            }
+            case ControlHand.Left:
+                HandleLeft();
+                break;
+            case ControlHand.Right:
+                HandleRight();
+                break;
+            case ControlHand.Both:
+                HandleBoth();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+        
         
         if (_isFirstTap)
         {
@@ -70,27 +86,87 @@ public class Main : MelonMod
             if (_doubleTapTimer > DoubleTapTime)
             {
                 _isFirstTap = false;
+            }
+        }
+
+        return;
+
+        void HandleBoth()
+        {
+            if (Player.rightController._touchPad || Player.leftController._touchPad)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
+            }
+        }
+
+        void HandleLeft()
+        {
+            if (Player.leftController._touchPad)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
+            }
+        }
+
+        void HandleRight()
+        {
+            if (Player.rightController._touchPad)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
             }
         }
     }
     
     private void MenuButton()
     {
-        if (Player.rightController._menuTap)
+        switch (Preferences.ReplayControlHand.Value)
         {
-            if (!_isFirstTap)
-            {
-                _isFirstTap = true;
-                _doubleTapTimer = 0;
-            }
-            else
-            {
-                if (_doubleTapTimer < DoubleTapTime)
-                {
-                    ObsBridge.SaveReplayBuffer();
-                    _isFirstTap = false;
-                }
-            }
+            case ControlHand.Left:
+                HandleLeft();
+                break;
+            case ControlHand.Right:
+                HandleRight();
+                break;
+            case ControlHand.Both:
+                HandleBoth();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         
         if (_isFirstTap)
@@ -100,6 +176,68 @@ public class Main : MelonMod
             if (_doubleTapTimer > DoubleTapTime)
             {
                 _isFirstTap = false;
+            }
+        }
+        
+        return;
+
+        void HandleBoth()
+        {
+            if (Player.rightController._menuTap || Player.leftController._menuTap)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
+            }
+        }
+
+        void HandleLeft()
+        {
+            if (Player.leftController._menuTap)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
+            }
+        }
+
+        void HandleRight()
+        {
+            if (Player.rightController._menuTap)
+            {
+                if (!_isFirstTap)
+                {
+                    _isFirstTap = true;
+                    _doubleTapTimer = 0;
+                }
+                else
+                {
+                    if (_doubleTapTimer < DoubleTapTime)
+                    {
+                        ObsBridge.SaveReplayBuffer();
+                        _isFirstTap = false;
+                    }
+                }
             }
         }
     }

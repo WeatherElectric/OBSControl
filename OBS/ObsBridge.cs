@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Types;
 
 namespace WeatherElectric.OBSControl.OBS;
 
@@ -29,6 +31,17 @@ internal static class ObsBridge
     public static void Disconnect()
     {
         Obs.Disconnect();
+    }
+
+    public static List<SceneBasicInfo> GetScenes()
+    {
+        var scenes = Obs.GetSceneList();
+        return scenes.Scenes;
+    }
+
+    public static void SetScene(string sceneName)
+    {
+        Obs.SetCurrentProgramScene(sceneName);
     }
 
     public static bool IsRecording()

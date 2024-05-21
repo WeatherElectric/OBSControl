@@ -12,6 +12,7 @@ internal static class Preferences
     public static MelonPreferences_Entry<string> WebsocketURL { get; set; }
     public static MelonPreferences_Entry<string> WebsocketPassword { get; set; }
     public static MelonPreferences_Entry<ControlMode> ReplayControlMode { get; set; }
+    public static MelonPreferences_Entry<ControlHand> ReplayControlHand { get; set; }
 
     public static void Setup()
     {
@@ -24,6 +25,7 @@ internal static class Preferences
         WebsocketURL = OwnCategory.CreateEntry("WebsocketURL", "ws://127.0.0.1:4455", "Websocket URL", "The URL to use for the websocket connection. Usually don't have to change this.");
         WebsocketPassword = OwnCategory.CreateEntry("WebsocketPassword", "REPLACEME", "Websocket Password", "The password to use for the websocket connection. Change this to the password you set in OBS.");
         ReplayControlMode = OwnCategory.CreateEntry("ReplayControlMode", ControlMode.Touchpad, "Replay Control Mode", "The mode to use for saving replays. Touchpad = Use the touchpad, MenuButton = Use the menu button.");
+        ReplayControlHand = OwnCategory.CreateEntry("ReplayControlHand", ControlHand.Right, "Replay Control Hand", "The hand to use for saving replays. Left = Left hand, Right = Right hand, Both = Both hands.");
         OwnCategory.SetFilePath(MelonUtils.UserDataDirectory + "/WeatherElectric.cfg");
         OwnCategory.SaveToFile(false);
         ModConsole.Msg("Finished preferences setup for OBSControl", 1);
@@ -34,4 +36,11 @@ internal enum ControlMode
 {
     Touchpad,
     MenuButton
+}
+
+internal enum ControlHand
+{
+    Left,
+    Right,
+    Both
 }

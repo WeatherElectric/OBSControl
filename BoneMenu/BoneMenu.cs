@@ -103,11 +103,26 @@ internal static class BoneMenu
         
         #endregion
         
+        #region Scenes
+        
+        SubPanelElement scenesPanel = subCat.CreateSubPanel("Scenes", Color.red);
+        var scenes = ObsBridge.GetScenes();
+        foreach (var scene in scenes)
+        {
+            scenesPanel.CreateFunctionElement(scene.Name, Color.white, () =>
+            {
+                ObsBridge.SetScene(scene.Name);
+            });
+        }
+        
+        #endregion
+        
         #region Settings
         
         SubPanelElement settingsPanel = subCat.CreateSubPanel("Settings", Color.gray);
         settingsPanel.CreateBoolPreference("Show Notifications", Color.white, Preferences.ShowNotifications, Preferences.OwnCategory);
         settingsPanel.CreateEnumPreference("Replay Control Mode", Color.white, Preferences.ReplayControlMode, Preferences.OwnCategory);
+        settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand, Preferences.OwnCategory);
         
         #endregion
     }

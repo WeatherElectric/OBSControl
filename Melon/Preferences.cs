@@ -11,7 +11,6 @@ internal static class Preferences
     public static MelonPreferences_Entry<bool> ShowNotifications { get; set; }
     public static MelonPreferences_Entry<string> WebsocketURL { get; set; }
     public static MelonPreferences_Entry<string> WebsocketPassword { get; set; }
-    public static MelonPreferences_Entry<ControlMode> ReplayControlMode { get; set; }
     public static MelonPreferences_Entry<ControlHand> ReplayControlHand { get; set; }
     public static MelonPreferences_Entry<float> DoubleTapTime { get; set; }
 
@@ -25,19 +24,12 @@ internal static class Preferences
         ShowNotifications = OwnCategory.CreateEntry("ShowNotifications", true, "Show Notifications", "Whether to show notifications when OBS events occur.");
         WebsocketURL = OwnCategory.CreateEntry("WebsocketURL", "ws://127.0.0.1:4455", "Websocket URL", "The URL to use for the websocket connection. Usually don't have to change this.");
         WebsocketPassword = OwnCategory.CreateEntry("WebsocketPassword", "REPLACEME", "Websocket Password", "The password to use for the websocket connection. Change this to the password you set in OBS.");
-        ReplayControlMode = OwnCategory.CreateEntry("ReplayControlMode", ControlMode.Touchpad, "Replay Control Mode", "The mode to use for saving replays. Touchpad = Use the touchpad, MenuButton = Use the menu button.");
         ReplayControlHand = OwnCategory.CreateEntry("ReplayControlHand", ControlHand.Right, "Replay Control Hand", "The hand to use for saving replays. Left = Left hand, Right = Right hand, Both = Both hands.");
         DoubleTapTime = OwnCategory.CreateEntry("DoubleTapTime", 0.3f, "Double Tap Time", "The time to wait between taps to trigger saving a replay.");
         OwnCategory.SetFilePath(MelonUtils.UserDataDirectory + "/WeatherElectric.cfg");
         OwnCategory.SaveToFile(false);
         ModConsole.Msg("Finished preferences setup for OBSControl", 1);
     }
-}
-
-internal enum ControlMode
-{
-    Touchpad,
-    MenuButton
 }
 
 internal enum ControlHand

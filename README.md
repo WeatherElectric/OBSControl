@@ -29,5 +29,5 @@ Allows you to control OBS from within BONELAB.
 4. Make sure that the URL ends with the port number that OBS shows
 5. Save the file
 ### In-Game Usage
-* Double tap the touchpad or the menu button to save a replay. The button used to save replays can be configured.
+* Double tap the menu button to save a replay. The hand it listens for can be configured.
 * BoneMenu has most of the controls.

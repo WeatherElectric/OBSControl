@@ -14,6 +14,15 @@ internal static class NotificationHandler
     
     #region Notifications
     
+    public static Notification SceneChanged { get; } = new()
+    {
+        Title = "Scene Changed",
+        Message = "Scene has been changed.",
+        Type = NotificationType.Information,
+        PopupLength = 1f,
+        ShowTitleOnPopup = true
+    };
+    
     public static Notification RecordingStarted { get; } = new()
     {
         Title = "Recording Started",

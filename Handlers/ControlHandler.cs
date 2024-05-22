@@ -1,3 +1,5 @@
+using WeatherElectric.OBSControl.Handlers;
+
 namespace WeatherElectric.OBSControl;
 
 internal static class ControlHandler
@@ -6,112 +8,6 @@ internal static class ControlHandler
     private static float _doubleTapTimer;
     
     public static void Update()
-    {
-        switch (Preferences.ReplayControlMode.Value)
-        {
-            case ControlMode.Touchpad:
-                Touchpad();
-                break;
-            case ControlMode.MenuButton:
-                MenuButton();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-    
-    private static void Touchpad()
-    {
-        switch (Preferences.ReplayControlHand.Value)
-        {
-            case ControlHand.Left:
-                HandleLeft();
-                break;
-            case ControlHand.Right:
-                HandleRight();
-                break;
-            case ControlHand.Both:
-                HandleBoth();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        
-        
-        if (_isFirstTap)
-        {
-            _doubleTapTimer += Time.deltaTime;
-
-            if (_doubleTapTimer > Preferences.DoubleTapTime.Value)
-            {
-                _isFirstTap = false;
-            }
-        }
-
-        return;
-
-        void HandleBoth()
-        {
-            if (Player.rightController._touchPad || Player.leftController._touchPad)
-            {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        _isFirstTap = false;
-                    }
-                }
-            }
-        }
-
-        void HandleLeft()
-        {
-            if (Player.leftController._touchPad)
-            {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        _isFirstTap = false;
-                    }
-                }
-            }
-        }
-
-        void HandleRight()
-        {
-            if (Player.rightController._touchPad)
-            {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        _isFirstTap = false;
-                    }
-                }
-            }
-        }
-    }
-    
-    private static void MenuButton()
     {
         switch (Preferences.ReplayControlHand.Value)
         {
@@ -154,6 +50,7 @@ internal static class ControlHandler
                     if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
                     {
                         ObsBridge.SaveReplayBuffer();
+                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
                         _isFirstTap = false;
                     }
                 }
@@ -174,6 +71,7 @@ internal static class ControlHandler
                     if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
                     {
                         ObsBridge.SaveReplayBuffer();
+                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
                         _isFirstTap = false;
                     }
                 }
@@ -194,6 +92,7 @@ internal static class ControlHandler
                     if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
                     {
                         ObsBridge.SaveReplayBuffer();
+                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
                         _isFirstTap = false;
                     }
                 }

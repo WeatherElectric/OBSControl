@@ -48,11 +48,9 @@ internal static class BoneMenu
             {
                 case true:
                     ObsBridge.StopRecording();
-                    NotificationHandler.SendNotif(NotificationHandler.RecordingStopped);
                     break;
                 case false:
                     ObsBridge.StartRecording();
-                    NotificationHandler.SendNotif(NotificationHandler.RecordingStarted);
                     break;
             }
         });
@@ -63,11 +61,9 @@ internal static class BoneMenu
             {
                 case true:
                     ObsBridge.ResumeRecording();
-                    NotificationHandler.SendNotif(NotificationHandler.RecordingResumed);
                     break;
                 case false:
                     ObsBridge.PauseRecording();
-                    NotificationHandler.SendNotif(NotificationHandler.RecordingPaused);
                     break;
             }
         });
@@ -84,11 +80,9 @@ internal static class BoneMenu
             {
                 case true:
                     ObsBridge.StopStreaming();
-                    NotificationHandler.SendNotif(NotificationHandler.StreamStopped);
                     break;
                 case false:
                     ObsBridge.StartStreaming();
-                    NotificationHandler.SendNotif(NotificationHandler.StreamStarted);
                     break;
             }
         });
@@ -105,20 +99,14 @@ internal static class BoneMenu
             {
                 case true:
                     ObsBridge.StopReplayBuffer();
-                    NotificationHandler.SendNotif(NotificationHandler.ReplayBufferStopped);
                     break;
                 case false:
                     ObsBridge.StartReplayBuffer();
-                    NotificationHandler.SendNotif(NotificationHandler.ReplayBufferStarted);
                     break;
             }
         });
         SetReplayButton(ObsBridge.IsReplayBufferActive());
-        replayPanel.CreateFunctionElement("Save Replay", Color.blue, () =>
-        {
-            ObsBridge.SaveReplayBuffer();
-            NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
-        });
+        replayPanel.CreateFunctionElement("Save Replay", Color.blue, ObsBridge.SaveReplayBuffer);
         
         #endregion
         
@@ -143,6 +131,7 @@ internal static class BoneMenu
         settingsPanel.CreateBoolPreference("Show Notifications", Color.white, Preferences.ShowNotifications, Preferences.OwnCategory);
         settingsPanel.CreateEnumPreference("Replay Control Mode", Color.white, Preferences.ReplayControlMode, Preferences.OwnCategory);
         settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand, Preferences.OwnCategory);
+        settingsPanel.CreateFloatPreference("Double Tap Time", Color.white, 0.1f, 0.1f, 1f, Preferences.DoubleTapTime, Preferences.OwnCategory);
         
         #endregion
         
@@ -156,21 +145,31 @@ internal static class BoneMenu
         ObsBridge.OnReplayBufferStateChanged += ReplayStatusChanged;
         ObsBridge.OnSceneCreated += SceneCreated;
         ObsBridge.OnSceneRemoved += SceneDeleted;
+        ObsBridge.OnReplayBufferSaved += ReplaySaved;
     }
 
     private static void RecordStatusChanged(object sender, RecordStateChangedEventArgs e)
     {
         SetRecordButton(e.OutputState.IsActive);
+        NotificationHandler.SendNotif(e.OutputState.IsActive
+            ? NotificationHandler.RecordingStarted
+            : NotificationHandler.RecordingStopped);
     }
     
     private static void StreamStatusChanged(object sender, StreamStateChangedEventArgs e)
     {
         SetStreamButton(e.OutputState.IsActive);
+        NotificationHandler.SendNotif(e.OutputState.IsActive
+            ? NotificationHandler.StreamStarted
+            : NotificationHandler.StreamStopped);
     }
     
     private static void ReplayStatusChanged(object sender, ReplayBufferStateChangedEventArgs e)
     {
         SetReplayButton(e.OutputState.IsActive);
+        NotificationHandler.SendNotif(e.OutputState.IsActive
+            ? NotificationHandler.ReplayBufferStarted
+            : NotificationHandler.ReplayBufferStopped);
     }
 
     private static void SceneCreated(object sender, SceneCreatedEventArgs e)
@@ -186,6 +185,11 @@ internal static class BoneMenu
     {
         _scenesPanel.RemoveElement(SceneButtons[e.SceneName]);
         SceneButtons.Remove(e.SceneName);
+    }
+
+    private static void ReplaySaved(object sender, ReplayBufferSavedEventArgs e)
+    {
+        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
     }
     
     private static void SetRecordButton(bool isRecording)

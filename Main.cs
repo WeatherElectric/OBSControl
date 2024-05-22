@@ -7,7 +7,7 @@ public class Main : MelonMod
     internal const string Description = "Control OBS from within BONELAB.";
     internal const string Author = "SoulWithMae";
     internal const string Company = "Weather Electric";
-    internal const string Version = "0.0.1";
+    internal const string Version = "1.0.0";
     internal const string DownloadLink = "https://thunderstore.io/c/bonelab/p/SoulWithMae/OBSControl/";
     
     private static bool _rigExists;
@@ -17,6 +17,9 @@ public class Main : MelonMod
     {
         ModConsole.Setup(LoggerInstance);
         Preferences.Setup();
+#if DEBUG
+        ModConsole.Log("This is a debug build!");
+#endif
         ObsBridge.Connect();
         ObsBridge.InitHooks();
         Hooking.OnLevelInitialized += OnLevelLoaded;

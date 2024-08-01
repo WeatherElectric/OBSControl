@@ -22,7 +22,7 @@ public class Main : MelonMod
 #endif
         ObsBridge.Connect();
         ObsBridge.InitHooks();
-        Hooking.OnLevelInitialized += OnLevelLoaded;
+        Hooking.OnUIRigCreated += OnUIRigCreated;
         Hooking.OnLevelUnloaded += OnLevelUnloaded;
     }
 
@@ -46,7 +46,7 @@ public class Main : MelonMod
         ControlHandler.Update();
     }
 
-    private static void OnLevelLoaded(LevelInfo levelInfo)
+    private static void OnUIRigCreated()
     {
         _rigExists = true;
     }

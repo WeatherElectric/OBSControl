@@ -7,20 +7,20 @@ namespace WeatherElectric.OBSControl.Menu;
 
 internal static class BoneMenu
 {
-    private static MenuCategory _subCat;
+    private static Page _subCat;
     private static FunctionElement _recordButton;
     private static FunctionElement _pauseButton;
     private static FunctionElement _streamButton;
     private static FunctionElement _replayButton;
     
-    private static SubPanelElement _scenesPanel;
+    private static Page _scenesPanel;
     private static readonly List<FunctionElement> SceneButtons = [];
     
     
     public static void SetupBaseMenu()
     {
-        MenuCategory mainCat = MenuManager.CreateCategory("Weather Electric", "#6FBDFF");
-        _subCat = mainCat.CreateCategory("OBSControl", "#284cb8");
+        Page mainCat = Page.Root.CreatePage("<color=#6FBDFF>Weather Electric</color>", Color.cyan);
+        _subCat = mainCat.CreatePage("<color=#284cb8>OBSControl</color>", Color.white);
         CheckIfConnected();
     }
 
@@ -28,10 +28,10 @@ internal static class BoneMenu
     {
         if (!ObsBridge.IsConnected())
         {
-            _subCat.CreateFunctionElement("OBS is not connected! Restart the game with OBS open!", Color.red, () =>
+            _subCat.CreateFunction("OBS is not connected! Restart the game with OBS open!", Color.red, () =>
             {
                 Utils.ForceCrash(ForcedCrashCategory.Abort);
-            }, "This will crash the game intentionally to close the game!");
+            });
             return;
         }
         
@@ -42,8 +42,8 @@ internal static class BoneMenu
     {
         #region Recording
         
-        SubPanelElement recordPanel = _subCat.CreateSubPanel("Record", Color.green);
-        _recordButton = recordPanel.CreateFunctionElement("Record Button", Color.green, () =>
+        Page recordPanel = _subCat.CreatePage("Record", Color.green);
+        _recordButton = recordPanel.CreateFunction("Record Button", Color.green, () =>
         {
             switch (ObsBridge.IsRecording())
             {
@@ -58,7 +58,7 @@ internal static class BoneMenu
             }
         });
         SetRecordButton(ObsBridge.IsRecording());
-        _pauseButton = recordPanel.CreateFunctionElement("Pause Button", Color.yellow, () =>
+        _pauseButton = recordPanel.CreateFunction("Pause Button", Color.yellow, () =>
         {
             switch (ObsBridge.IsRecordingPaused())
             {
@@ -78,8 +78,8 @@ internal static class BoneMenu
         
         #region Streaming
         
-        SubPanelElement streamPanel = _subCat.CreateSubPanel("Stream", Color.blue);
-        _streamButton = streamPanel.CreateFunctionElement("Stream Button", Color.blue, () =>
+        Page streamPanel = _subCat.CreatePage("Stream", Color.blue);
+        _streamButton = streamPanel.CreateFunction("Stream Button", Color.blue, () =>
         {
             switch (ObsBridge.IsStreaming())
             {
@@ -99,8 +99,8 @@ internal static class BoneMenu
         
         #region Replay
         
-        SubPanelElement replayPanel = _subCat.CreateSubPanel("Replay", Color.yellow);
-        _replayButton = replayPanel.CreateFunctionElement("Replay Button", Color.blue, () =>
+        Page replayPanel = _subCat.CreatePage("Replay", Color.yellow);
+        _replayButton = replayPanel.CreateFunction("Replay Button", Color.blue, () =>
         {
             switch (ObsBridge.IsReplayBufferActive())
             {
@@ -115,7 +115,7 @@ internal static class BoneMenu
             }
         });
         SetReplayButton(ObsBridge.IsReplayBufferActive());
-        replayPanel.CreateFunctionElement("Save Replay", Color.blue, () =>
+        replayPanel.CreateFunction("Save Replay", Color.blue, () =>
         {
             ObsBridge.SaveReplayBuffer();
             NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
@@ -125,12 +125,12 @@ internal static class BoneMenu
         
         #region Scenes
         
-        _scenesPanel = _subCat.CreateSubPanel("Scenes", Color.red);
+        _scenesPanel = _subCat.CreatePage("Scenes", Color.red);
         var scenes = ObsBridge.GetScenes();
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
         foreach (var scene in scenes)
         {
-            var func= _scenesPanel.CreateFunctionElement(scene.Name, Color.white, () =>
+            var func= _scenesPanel.CreateFunction(scene.Name, Color.white, () =>
             {
                 ObsBridge.SetScene(scene.Name);
                 NotificationHandler.SceneChanged.Message = $"Scene changed to {scene.Name}";
@@ -143,9 +143,9 @@ internal static class BoneMenu
         
         #region Settings
         
-        SubPanelElement settingsPanel = _subCat.CreateSubPanel("Settings", Color.gray);
+        Page settingsPanel = _subCat.CreatePage("Settings", Color.gray);
         settingsPanel.CreateBoolPreference("Show Notifications", Color.white, Preferences.ShowNotifications, Preferences.OwnCategory);
-        settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand, Preferences.OwnCategory);
+        settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand.Value, Preferences.OwnCategory);
         settingsPanel.CreateFloatPreference("Double Tap Time", Color.white, 0.1f, 0.1f, 1f, Preferences.DoubleTapTime, Preferences.OwnCategory);
         
         #endregion
@@ -179,7 +179,7 @@ internal static class BoneMenu
 
     private static void SceneCreated(object sender, SceneCreatedEventArgs e)
     {
-        var func = _scenesPanel.CreateFunctionElement(e.SceneName, Color.white, () =>
+        var func = _scenesPanel.CreateFunction(e.SceneName, Color.white, () =>
         {
             ObsBridge.SetScene(e.SceneName);
         });
@@ -188,9 +188,9 @@ internal static class BoneMenu
     
     private static void SceneDeleted(object sender, SceneRemovedEventArgs e)
     {
-        foreach (var button in SceneButtons.Where(button => button.Name == e.SceneName))
+        foreach (var button in SceneButtons.Where(button => button.ElementName == e.SceneName))
         {
-            _scenesPanel.RemoveElement(button);
+            _scenesPanel.Remove(button);
             SceneButtons.Remove(button);
             break;
         }
@@ -200,13 +200,13 @@ internal static class BoneMenu
     {
         if (isRecording)
         {
-            _recordButton.SetColor(Color.red);
-            _recordButton.SetName("Stop Recording");
+            _recordButton.ElementColor = Color.red;
+            _recordButton.ElementName = "Stop Recording";
         }
         else
         {
-            _recordButton.SetColor(Color.green);
-            _recordButton.SetName("Start Recording");
+            _recordButton.ElementColor = Color.green;
+            _recordButton.ElementName = "Start Recording";
         }
     }
     
@@ -214,13 +214,13 @@ internal static class BoneMenu
     {
         if (isPaused)
         {
-            _pauseButton.SetColor(Color.white);
-            _pauseButton.SetName("Resume Recording");
+            _pauseButton.ElementColor = Color.white;
+            _pauseButton.ElementName = "Resume Recording";
         }
         else
         {
-            _pauseButton.SetColor(Color.yellow);
-            _pauseButton.SetName("Pause Recording");
+            _pauseButton.ElementColor = Color.yellow;
+            _pauseButton.ElementName = "Pause Recording";
         }
     }
 
@@ -228,13 +228,13 @@ internal static class BoneMenu
     {
         if (isStreaming)
         {
-            _streamButton.SetColor(Color.red);
-            _streamButton.SetName("Stop Streaming");
+            _streamButton.ElementColor = Color.red;
+            _streamButton.ElementName = "Stop Streaming";
         }
         else
         {
-            _streamButton.SetColor(Color.green);
-            _streamButton.SetName("Start Streaming");
+            _streamButton.ElementColor = Color.green;
+            _streamButton.ElementName = "Start Streaming";
         }
     }
     
@@ -242,13 +242,13 @@ internal static class BoneMenu
     {
         if (isReplayActive)
         {
-            _replayButton.SetColor(Color.red);
-            _replayButton.SetName("Stop Replay Buffer");
+            _replayButton.ElementColor = Color.red;
+            _replayButton.ElementName = "Stop Replay Buffer";
         }
         else
         {
-            _replayButton.SetColor(Color.green);
-            _replayButton.SetName("Start Replay Buffer");
+            _replayButton.ElementColor = Color.green;
+            _replayButton.ElementName = "Start Replay Buffer";
         }
     }
 }

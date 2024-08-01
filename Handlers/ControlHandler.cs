@@ -38,7 +38,7 @@ internal static class ControlHandler
 
         void HandleBoth()
         {
-            if (Player.rightController._menuTap || Player.leftController._menuTap)
+            if (Player.RightController._menuTap || Player.LeftController._menuTap)
             {
                 if (!_isFirstTap)
                 {
@@ -59,7 +59,7 @@ internal static class ControlHandler
 
         void HandleLeft()
         {
-            if (Player.leftController._menuTap)
+            if (Player.LeftController._menuTap)
             {
                 if (!_isFirstTap)
                 {
@@ -80,7 +80,7 @@ internal static class ControlHandler
 
         void HandleRight()
         {
-            if (Player.rightController._menuTap)
+            if (Player.RightController._menuTap)
             {
                 if (!_isFirstTap)
                 {

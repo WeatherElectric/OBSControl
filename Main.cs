@@ -23,6 +23,7 @@ public class Main : MelonMod
         
         Hooking.OnUIRigCreated += OnUIRigCreated;
         Hooking.OnLevelUnloaded += OnLevelUnloaded;
+        BoneMenu.SetupBaseMenu();
     }
 
     /// <inheritdoc />

@@ -11,6 +11,7 @@ internal static class BoneMenu
     private static FunctionElement _pauseButton;
     private static FunctionElement _streamButton;
     private static FunctionElement _replayButton;
+    private static FunctionElement _connectButton;
     
     private static Page _scenesPanel;
     private static readonly List<FunctionElement> SceneButtons = [];
@@ -20,25 +21,16 @@ internal static class BoneMenu
     {
         var mainCat = Page.Root.CreatePage("<color=#6FBDFF>Weather Electric</color>", Color.cyan);
         _subCat = mainCat.CreatePage("<color=#284cb8>OBSControl</color>", Color.white);
-        CheckIfConnected();
-    }
-
-    private static void CheckIfConnected()
-    {
-        if (!ObsBridge.IsConnected())
+        _connectButton = _subCat.CreateFunction("If you see this, it failed to connect.", Color.red, () =>
         {
-            _subCat.CreateFunction("OBS is not connected! Restart the game with OBS open!", Color.red, () =>
-            {
-                Utils.ForceCrash(ForcedCrashCategory.Abort);
-            });
-            return;
-        }
-        
-        SetupObsControls();
+            Utils.ForceCrash(ForcedCrashCategory.AccessViolation);
+        });
     }
 
-    private static void SetupObsControls()
+    public static void SetupObsControls()
     {
+        _subCat.Remove(_connectButton);
+        
         #region Recording
         
         Page recordPanel = _subCat.CreatePage("Record", Color.green);

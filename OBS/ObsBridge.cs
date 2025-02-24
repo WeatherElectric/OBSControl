@@ -105,7 +105,7 @@ public static class ObsBridge
     private static void ObsConnected(object sender, EventArgs e)
     {
         ModConsole.Msg("OBS connected!", 1);
-        BoneMenu.SetupBaseMenu();
+        BoneMenu.SetupObsControls();
     }
     
     #endregion

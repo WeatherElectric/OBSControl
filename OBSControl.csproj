@@ -1,87 +1,78 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{45D76E99-D2DC-47EE-9CDE-E84CEF86E4F9}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
         <RootNamespace>WeatherElectric.OBSControl</RootNamespace>
-        <AssemblyName>OBSControl</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
         <LangVersion>default</LangVersion>
+        <IsPackable>false</IsPackable>
+        <Company>Weather Electric</Company>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+        <FileVersion>2.0.0.0</FileVersion>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <AssemblyName>OBSControl</AssemblyName>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>bin\Debug\OBSControl.xml</DocumentationFile>
+
+    <PropertyGroup>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>RELEASE;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>bin\Release\OBSControl.xml</DocumentationFile>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>TRACE;MELONLOADER</DefineConstants>
+      <DocumentationFile>bin\Debug\net6.0\OBSControl.xml</DocumentationFile>
     </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DefineConstants>TRACE;MELONLOADER</DefineConstants>
+      <DocumentationFile>bin\Release\net6.0\OBSControl.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
-        <Reference Include="Assembly-CSharp">
-            <HintPath>Links\MelonLoader\Managed\Assembly-CSharp.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
+      <Compile Remove="Links\**" />
+      <Compile Remove="Staging\**" />
+      <Compile Remove="Refs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Links\**" />
+      <EmbeddedResource Remove="Staging\**" />
+      <EmbeddedResource Remove="Refs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Links\**" />
+      <None Remove="Staging\**" />
+      <None Remove="Refs\**" />
+      <None Remove=".gitignore" />
+      <None Remove="README.md" />
+      <None Remove="setup.bat" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="BoneLib">
             <HintPath>Links\Mods\BoneLib.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Il2Cppmscorlib">
-            <HintPath>Links\MelonLoader\Managed\Il2Cppmscorlib.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="MelonLoader">
-            <HintPath>Links\MelonLoader\MelonLoader.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="obs-websocket-dotnet">
-            <HintPath>Refs\obs-websocket-dotnet.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="UnhollowerBaseLib">
-            <HintPath>Links\MelonLoader\Managed\UnhollowerBaseLib.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>Links\MelonLoader\Managed\UnityEngine.CoreModule.dll</HintPath>
-            <Private>false</Private>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
-        <Compile Include="BoneMenu\BoneMenu.cs"/>
-        <Compile Include="BoneMenu\BoneMenuExtensions.cs"/>
-        <Compile Include="GlobalUsings.cs"/>
-        <Compile Include="Handlers\ControlHandler.cs" />
-        <Compile Include="Handlers\NotificationHandler.cs" />
-        <Compile Include="Main.cs"/>
-        <Compile Include="Melon\ModConsole.cs"/>
-        <Compile Include="Melon\Preferences.cs"/>
-        <Compile Include="OBS\ObsBridge.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs"/>
+      <PackageReference Include="Bonelab.GameLibs.Steam" Version="5.0.0" />
+      <PackageReference Include="Il2CppInterop.Runtime" Version="1.4.5" />
+      <PackageReference Include="obs-websocket-dotnet" Version="5.0.0.3" />
+      <PackageReference Include="System.Reactive" Version="4.3.2" />
+      <PackageReference Include="Websocket.Client" Version="4.4.43" />
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <PropertyGroup>
-        <PostBuildEvent>COPY "$(TargetPath)" "$(SolutionDir)\Links\Mods"
-            COPY "$(TargetPath)" "$(SolutionDir)Staging\Mods"
-COPY "$(TargetDir)OBSControl.xml" "$(SolutionDir)Staging\Mods"
-COPY "$(SolutionDir)README.md" "$(SolutionDir)Staging"</PostBuildEvent>
-    </PropertyGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Links\Mods&quot;&#xA;COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Staging\Mods&quot;&#xA;COPY &quot;$(TargetDir)OBSControl.xml&quot; &quot;$(SolutionDir)Staging\Mods&quot;" />
+    </Target>
+
 </Project>

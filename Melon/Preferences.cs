@@ -1,5 +1,7 @@
 ﻿// ReSharper disable MemberCanBePrivate.Global, these categories may be used outside of this namespace to create bonemenu options.
 
+using MelonLoader.Utils;
+
 namespace WeatherElectric.OBSControl.Melon;
 
 internal static class Preferences
@@ -18,7 +20,7 @@ internal static class Preferences
     {
         LoggingMode = GlobalCategory.GetEntry<int>("LoggingMode") ?? GlobalCategory.CreateEntry("LoggingMode", 0,
             "Logging Mode", "The level of logging to use. 0 = Important Only, 1 = All");
-        GlobalCategory.SetFilePath(MelonUtils.UserDataDirectory + "/WeatherElectric.cfg");
+        GlobalCategory.SetFilePath(MelonEnvironment.UserDataDirectory + "/WeatherElectric.cfg");
         GlobalCategory.SaveToFile(false);
         
         ShowNotifications = OwnCategory.CreateEntry("ShowNotifications", true, "Show Notifications", "Whether to show notifications when OBS events occur.");
@@ -26,7 +28,7 @@ internal static class Preferences
         WebsocketPassword = OwnCategory.CreateEntry("WebsocketPassword", "REPLACEME", "Websocket Password", "The password to use for the websocket connection. Change this to the password you set in OBS.");
         ReplayControlHand = OwnCategory.CreateEntry("ReplayControlHand", ControlHand.Right, "Replay Control Hand", "The hand to use for saving replays. Left = Left hand, Right = Right hand, Both = Both hands.");
         DoubleTapTime = OwnCategory.CreateEntry("DoubleTapTime", 0.3f, "Double Tap Time", "The time to wait between taps to trigger saving a replay.");
-        OwnCategory.SetFilePath(MelonUtils.UserDataDirectory + "/WeatherElectric.cfg");
+        OwnCategory.SetFilePath(MelonEnvironment.UserDataDirectory + "/WeatherElectric.cfg");
         OwnCategory.SaveToFile(false);
         ModConsole.Msg("Finished preferences setup for OBSControl", 1);
     }

@@ -7,7 +7,7 @@ public class Main : MelonMod
     internal const string Description = "Control OBS from within BONELAB.";
     internal const string Author = "SoulWithMae";
     internal const string Company = "Weather Electric";
-    internal const string Version = "1.0.0";
+    internal const string Version = "1.1.0";
     internal const string DownloadLink = "https://thunderstore.io/c/bonelab/p/SoulWithMae/OBSControl/";
     
     private static bool _rigExists;
@@ -18,18 +18,11 @@ public class Main : MelonMod
         ModConsole.Setup(LoggerInstance);
         Preferences.Setup();
 #if DEBUG
-        ModConsole.Log("This is a debug build!");
+        ModConsole.Msg("This is a debug build!");
 #endif
-        ObsBridge.Connect();
-        ObsBridge.InitHooks();
-        Hooking.OnLevelInitialized += OnLevelLoaded;
+        
+        Hooking.OnUIRigCreated += OnUIRigCreated;
         Hooking.OnLevelUnloaded += OnLevelUnloaded;
-    }
-
-    /// <inheritdoc />
-    public override void OnLateInitializeMelon()
-    {
-        // i want this to be called late to give OBS time to connect, since the bonemenu setup method uses OBS
         BoneMenu.SetupBaseMenu();
     }
 
@@ -46,9 +39,13 @@ public class Main : MelonMod
         ControlHandler.Update();
     }
 
-    private static void OnLevelLoaded(LevelInfo levelInfo)
+    private static void OnUIRigCreated()
     {
         _rigExists = true;
+        
+        if (ObsBridge.IsConnected()) return;
+        ObsBridge.Connect();
+        ObsBridge.InitHooks();
     }
 
     private static void OnLevelUnloaded()

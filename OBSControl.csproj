@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -27,10 +27,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DefineConstants>TRACE;MELONLOADER</DefineConstants>
+      <DocumentationFile>bin\Debug\net6.0\OBSControl.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <DefineConstants>TRACE;MELONLOADER</DefineConstants>
+      <DocumentationFile>bin\Release\net6.0\OBSControl.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -55,37 +57,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="MelonLoader">
-            <HintPath>Links\MelonLoader\net6\MelonLoader.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp">
-            <HintPath>Links\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSLZ.Marrow.dll">
-            <HintPath>Links\MelonLoader\Il2CppAssemblies\Il2CppSLZ.Marrow.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2Cppmscorlib">
-            <HintPath>Links\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppInterop.Runtime">
-            <HintPath>Links\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
-        </Reference>
-        <Reference Include="obs-websocket-dotnet">
-          <HintPath>Refs\obs-websocket-dotnet.dll</HintPath>
-        </Reference>
-        <Reference Include="obs-websocket-dotnet">
-          <HintPath>Refs\obs-websocket-dotnet.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>Links\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
-        </Reference>
         <Reference Include="BoneLib">
-        <HintPath>Links\Mods\BoneLib.dll</HintPath>
+            <HintPath>Links\Mods\BoneLib.dll</HintPath>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Bonelab.GameLibs.Steam" Version="5.0.0" />
+      <PackageReference Include="Il2CppInterop.Runtime" Version="1.4.5" />
+      <PackageReference Include="obs-websocket-dotnet" Version="5.0.0.3" />
+      <PackageReference Include="System.Reactive" Version="4.3.2" />
+      <PackageReference Include="Websocket.Client" Version="4.4.43" />
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Links\Mods&quot;&#xA;COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Staging\Mods&quot;" />
+      <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Links\Mods&quot;&#xA;COPY &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Staging\Mods&quot;&#xA;COPY &quot;$(TargetDir)OBSControl.xml&quot; &quot;$(SolutionDir)Staging\Mods&quot;" />
     </Target>
 
 </Project>

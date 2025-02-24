@@ -63,6 +63,7 @@ public static class ObsBridge
     
     internal static void Connect()
     {
+        ModConsole.Msg("Attempting to connect to OBS...", 1);
         try
         {
             Obs.ConnectAsync(Preferences.WebsocketURL.Value, Preferences.WebsocketPassword.Value);
@@ -79,10 +80,12 @@ public static class ObsBridge
         {
             ModConsole.Error($"Failed to connect to OBS. Error: {e.Message}");
         }
+        ModConsole.Msg("If you still aren't connected, it's likely the wrong password.", 1);
     }
 
     internal static void Disconnect()
     {
+        ModConsole.Msg("Disconnecting from OBS...", 1);
         Obs.Disconnect();
     }
 
@@ -96,6 +99,13 @@ public static class ObsBridge
         Obs.VirtualcamStateChanged += VirtualCamStateChanged;
         Obs.SceneCreated += SceneCreated;
         Obs.SceneRemoved += SceneRemoved;
+        Obs.Connected += ObsConnected;
+    }
+
+    private static void ObsConnected(object sender, EventArgs e)
+    {
+        ModConsole.Msg("OBS connected!", 1);
+        BoneMenu.SetupBaseMenu();
     }
     
     #endregion

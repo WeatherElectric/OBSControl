@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OBSWebsocketDotNet.Types.Events;
+﻿using OBSWebsocketDotNet.Types.Events;
 using UnityEngine.Diagnostics;
 using WeatherElectric.OBSControl.Handlers;
 
@@ -19,7 +18,7 @@ internal static class BoneMenu
     
     public static void SetupBaseMenu()
     {
-        Page mainCat = Page.Root.CreatePage("<color=#6FBDFF>Weather Electric</color>", Color.cyan);
+        var mainCat = Page.Root.CreatePage("<color=#6FBDFF>Weather Electric</color>", Color.cyan);
         _subCat = mainCat.CreatePage("<color=#284cb8>OBSControl</color>", Color.white);
         CheckIfConnected();
     }

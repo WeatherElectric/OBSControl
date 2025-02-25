@@ -33,7 +33,7 @@ internal static class BoneMenu
         
         #region Recording
         
-        Page recordPanel = _subCat.CreatePage("Record", Color.green);
+        var recordPanel = _subCat.CreatePage("Record", Color.green);
         _recordButton = recordPanel.CreateFunction("Record Button", Color.green, () =>
         {
             switch (ObsBridge.IsRecording())
@@ -69,7 +69,7 @@ internal static class BoneMenu
         
         #region Streaming
         
-        Page streamPanel = _subCat.CreatePage("Stream", Color.blue);
+        var streamPanel = _subCat.CreatePage("Stream", Color.blue);
         _streamButton = streamPanel.CreateFunction("Stream Button", Color.blue, () =>
         {
             switch (ObsBridge.IsStreaming())
@@ -90,7 +90,7 @@ internal static class BoneMenu
         
         #region Replay
         
-        Page replayPanel = _subCat.CreatePage("Replay", Color.yellow);
+        var replayPanel = _subCat.CreatePage("Replay", Color.yellow);
         _replayButton = replayPanel.CreateFunction("Replay Button", Color.blue, () =>
         {
             switch (ObsBridge.IsReplayBufferActive())
@@ -119,8 +119,10 @@ internal static class BoneMenu
         _scenesPanel = _subCat.CreatePage("Scenes", Color.red);
         var scenes = ObsBridge.GetScenes();
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+        ModConsole.Msg("Finding scenes", 1);
         foreach (var scene in scenes)
         {
+            ModConsole.Msg($"Found scene: {scene.Name}", 1);
             var func= _scenesPanel.CreateFunction(scene.Name, Color.white, () =>
             {
                 ObsBridge.SetScene(scene.Name);
@@ -134,9 +136,13 @@ internal static class BoneMenu
         
         #region Settings
         
-        Page settingsPanel = _subCat.CreatePage("Settings", Color.gray);
+        var settingsPanel = _subCat.CreatePage("Settings", Color.gray);
         settingsPanel.CreateBoolPreference("Show Notifications", Color.white, Preferences.ShowNotifications, Preferences.OwnCategory);
-        settingsPanel.CreateEnumPreference("Replay Control Hand", Color.white, Preferences.ReplayControlHand.Value, Preferences.OwnCategory);
+        settingsPanel.CreateEnum("Replay Control Hand", Color.white, Preferences.ReplayControlHand.Value, v =>
+        {
+            Preferences.ReplayControlHand.Value = (ControlHand)v;
+            Preferences.OwnCategory.SaveToFile(false);
+        });
         settingsPanel.CreateFloatPreference("Double Tap Time", Color.white, 0.1f, 0.1f, 1f, Preferences.DoubleTapTime, Preferences.OwnCategory);
         
         #endregion
@@ -170,6 +176,7 @@ internal static class BoneMenu
 
     private static void SceneCreated(object sender, SceneCreatedEventArgs e)
     {
+        ModConsole.Msg($"Scene created: {e.SceneName}", 1);
         var func = _scenesPanel.CreateFunction(e.SceneName, Color.white, () =>
         {
             ObsBridge.SetScene(e.SceneName);
@@ -179,6 +186,7 @@ internal static class BoneMenu
     
     private static void SceneDeleted(object sender, SceneRemovedEventArgs e)
     {
+        ModConsole.Msg($"Scene deleted: {e.SceneName}", 1);
         foreach (var button in SceneButtons.Where(button => button.ElementName == e.SceneName))
         {
             _scenesPanel.Remove(button);

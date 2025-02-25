@@ -242,6 +242,7 @@ public static class ObsBridge
     public static void StartRecording()
     {
         if (IsRecording()) return;
+        ModConsole.Msg("Starting recording...", 1);
         try
         {
             Obs.StartRecord();
@@ -262,6 +263,7 @@ public static class ObsBridge
     public static void PauseRecording()
     {
         if (IsRecordingPaused()) return;
+        ModConsole.Msg("Pausing recording...", 1);
         try
         {
             Obs.PauseRecord();
@@ -282,6 +284,7 @@ public static class ObsBridge
     public static void ResumeRecording()
     {
         if (!IsRecordingPaused()) return;
+        ModConsole.Msg("Resuming recording...", 1);
         try
         {
             Obs.ResumeRecord();
@@ -302,6 +305,7 @@ public static class ObsBridge
     public static void StopRecording()
     {
         if (!IsRecording()) return;
+        ModConsole.Msg("Stopping recording...", 1);
         try
         {
             Obs.StopRecord();
@@ -326,6 +330,7 @@ public static class ObsBridge
     public static void StartStreaming()
     {
         if (IsStreaming()) return;
+        ModConsole.Msg("Starting stream...", 1);
         try
         {
             Obs.StartStream();
@@ -346,6 +351,7 @@ public static class ObsBridge
     public static void StopStreaming()
     {
         if (!IsStreaming()) return;
+        ModConsole.Msg("Stopping stream...", 1);
         try
         {
             Obs.StopStream();
@@ -370,6 +376,7 @@ public static class ObsBridge
     public static void StartReplayBuffer()
     {
         if (IsReplayBufferActive()) return;
+        ModConsole.Msg("Starting replay buffer...", 1);
         try
         {
             Obs.StartReplayBuffer();
@@ -390,6 +397,7 @@ public static class ObsBridge
     public static void StopReplayBuffer()
     {
         if (!IsReplayBufferActive()) return;
+        ModConsole.Msg("Stopping replay buffer...", 1);
         try
         {
             Obs.StopReplayBuffer();
@@ -410,6 +418,7 @@ public static class ObsBridge
     public static void SaveReplayBuffer()
     {
         if (!IsReplayBufferActive()) return;
+        ModConsole.Msg("Saving replay buffer...", 1);
         try
         {
             Obs.SaveReplayBuffer();

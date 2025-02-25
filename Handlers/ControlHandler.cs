@@ -9,6 +9,9 @@ internal static class ControlHandler
     
     public static void Update()
     {
+#if DEBUG
+        ModConsole.Msg($"ReplayControlHand: {Preferences.ReplayControlHand.Value}");
+#endif
         switch (Preferences.ReplayControlHand.Value)
         {
             case ControlHand.Left:
@@ -23,79 +26,74 @@ internal static class ControlHandler
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
-        if (_isFirstTap)
-        {
-            _doubleTapTimer += Time.deltaTime;
 
-            if (_doubleTapTimer > Preferences.DoubleTapTime.Value)
-            {
-                _isFirstTap = false;
-            }
+        if (!_isFirstTap) return;
+        _doubleTapTimer += Time.deltaTime;
+
+        if (_doubleTapTimer > Preferences.DoubleTapTime.Value)
+        {
+            _isFirstTap = false;
         }
-        
+
         return;
 
         void HandleBoth()
         {
-            if (Player.RightController._menuTap || Player.LeftController._menuTap)
+#if DEBUG
+            ModConsole.Msg("Handling both");
+#endif
+            if (!Player.RightController._menuTap && !Player.LeftController._menuTap) return;
+            if (!_isFirstTap)
             {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
-                        _isFirstTap = false;
-                    }
-                }
+                _isFirstTap = true;
+                _doubleTapTimer = 0;
+            }
+            else
+            {
+                if (!(_doubleTapTimer < Preferences.DoubleTapTime.Value)) return;
+                ObsBridge.SaveReplayBuffer();
+                NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
+                _isFirstTap = false;
             }
         }
 
         void HandleLeft()
         {
-            if (Player.LeftController._menuTap)
+#if DEBUG
+            ModConsole.Msg("Handling left");
+#endif
+            if (!Player.LeftController._menuTap) return;
+            if (!_isFirstTap)
             {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
-                        _isFirstTap = false;
-                    }
-                }
+                _isFirstTap = true;
+                _doubleTapTimer = 0;
+            }
+            else
+            {
+                if (!(_doubleTapTimer < Preferences.DoubleTapTime.Value)) return;
+                ObsBridge.SaveReplayBuffer();
+                NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
+                _isFirstTap = false;
             }
         }
 
         void HandleRight()
         {
-            if (Player.RightController._menuTap)
+#if DEBUG
+            ModConsole.Msg("Handling right");
+#endif
+            if (!Player.RightController._menuTap) return;
+            if (!_isFirstTap)
             {
-                if (!_isFirstTap)
-                {
-                    _isFirstTap = true;
-                    _doubleTapTimer = 0;
-                }
-                else
-                {
-                    if (_doubleTapTimer < Preferences.DoubleTapTime.Value)
-                    {
-                        ObsBridge.SaveReplayBuffer();
-                        NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
-                        _isFirstTap = false;
-                    }
-                }
+                _isFirstTap = true;
+                _doubleTapTimer = 0;
+            }
+            else
+            {
+                if (!(_doubleTapTimer < Preferences.DoubleTapTime.Value)) return;
+                ObsBridge.SaveReplayBuffer();
+                NotificationHandler.SendNotif(NotificationHandler.ReplaySaved);
+                _isFirstTap = false;
             }
         }
     }

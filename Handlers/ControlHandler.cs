@@ -9,6 +9,9 @@ internal static class ControlHandler
     
     public static void Update()
     {
+        if (!ObsBridge.IsConnected()) return;
+        if (!ObsBridge.IsReplayBufferActive()) return;
+        
 #if DEBUG
         ModConsole.Msg($"ReplayControlHand: {Preferences.ReplayControlHand.Value}");
 #endif

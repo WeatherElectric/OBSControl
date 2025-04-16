@@ -148,7 +148,6 @@ internal static class BoneMenu
         #endregion
         
         ConnectHooks();
-        SetButtonStates();
     }
 
     private static void ConnectHooks()
@@ -158,17 +157,6 @@ internal static class BoneMenu
         ObsBridge.OnReplayBufferStateChanged += ReplayStatusChanged;
         ObsBridge.OnSceneCreated += SceneCreated;
         ObsBridge.OnSceneRemoved += SceneDeleted;
-    }
-
-    private static void SetButtonStates()
-    {
-        var recordState = ObsBridge.IsRecording();
-        var streamState = ObsBridge.IsStreaming();
-        var replayState = ObsBridge.IsReplayBufferActive();
-        
-        SetRecordButton(recordState);
-        SetStreamButton(streamState);
-        SetReplayButton(replayState);
     }
 
     private static void RecordStatusChanged(object sender, RecordStateChangedEventArgs e)

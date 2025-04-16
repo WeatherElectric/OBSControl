@@ -7,7 +7,7 @@ public class Main : MelonMod
     internal const string Description = "Control OBS from within BONELAB.";
     internal const string Author = "Mabel Amber";
     internal const string Company = "Weather Electric";
-    internal const string Version = "1.1.3";
+    internal const string Version = "1.1.4";
     internal const string DownloadLink = "https://thunderstore.io/c/bonelab/p/SoulWithMae/OBSControl/";
     
     private static bool _rigExists;

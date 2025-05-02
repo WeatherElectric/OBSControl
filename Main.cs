@@ -7,7 +7,7 @@ public class Main : MelonMod
     internal const string Description = "Control OBS from within BONELAB.";
     internal const string Author = "Mabel Amber";
     internal const string Company = "Weather Electric";
-    internal const string Version = "1.1.4";
+    internal const string Version = "1.2.0";
     internal const string DownloadLink = "https://thunderstore.io/c/bonelab/p/SoulWithMae/OBSControl/";
     
     private static bool _rigExists;
@@ -36,7 +36,7 @@ public class Main : MelonMod
     public override void OnUpdate()
     {
         if (!_rigExists) return;
-        if (!ObsBridge.IsConnected()) return;
+        if (!ObsBridge.Connected) return;
         ControlHandler.Update();
     }
 
@@ -44,7 +44,7 @@ public class Main : MelonMod
     {
         _rigExists = true;
         
-        if (ObsBridge.IsConnected()) return;
+        if (ObsBridge.Connected) return;
         ObsBridge.Connect();
         ObsBridge.InitHooks();
     }

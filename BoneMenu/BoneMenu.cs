@@ -14,7 +14,7 @@ internal static class BoneMenu
     private static FunctionElement _connectButton;
     
     private static Page _scenesPanel;
-    private static readonly List<FunctionElement> SceneButtons = [];
+    private static readonly Dictionary<string, FunctionElement> SceneButtons = new();
     
     
     public static void SetupBaseMenu()
@@ -36,7 +36,7 @@ internal static class BoneMenu
         var recordPanel = _subCat.CreatePage("Record", Color.green);
         _recordButton = recordPanel.CreateFunction("Record Button", Color.green, () =>
         {
-            switch (ObsBridge.IsRecording())
+            switch (ObsBridge.RecordActive)
             {
                 case true:
                     ObsBridge.StopRecording();
@@ -48,10 +48,10 @@ internal static class BoneMenu
                     break;
             }
         });
-        SetRecordButton(ObsBridge.IsRecording());
+        SetRecordButton(ObsBridge.RecordActive);
         _pauseButton = recordPanel.CreateFunction("Pause Button", Color.yellow, () =>
         {
-            switch (ObsBridge.IsRecordingPaused())
+            switch (ObsBridge.RecordPaused)
             {
                 case true:
                     ObsBridge.ResumeRecording();
@@ -63,7 +63,7 @@ internal static class BoneMenu
                     break;
             }
         });
-        SetPauseButton(ObsBridge.IsRecordingPaused());
+        SetPauseButton(ObsBridge.RecordPaused);
         
         #endregion
         
@@ -72,7 +72,7 @@ internal static class BoneMenu
         var streamPanel = _subCat.CreatePage("Stream", Color.blue);
         _streamButton = streamPanel.CreateFunction("Stream Button", Color.blue, () =>
         {
-            switch (ObsBridge.IsStreaming())
+            switch (ObsBridge.StreamActive)
             {
                 case true:
                     ObsBridge.StopStreaming();
@@ -84,7 +84,7 @@ internal static class BoneMenu
                     break;
             }
         });
-        SetStreamButton(ObsBridge.IsStreaming());
+        SetStreamButton(ObsBridge.StreamActive);
         
         #endregion
         
@@ -93,7 +93,7 @@ internal static class BoneMenu
         var replayPanel = _subCat.CreatePage("Replay", Color.yellow);
         _replayButton = replayPanel.CreateFunction("Replay Button", Color.blue, () =>
         {
-            switch (ObsBridge.IsReplayBufferActive())
+            switch (ObsBridge.ReplayBufferActive)
             {
                 case true:
                     ObsBridge.StopReplayBuffer();
@@ -105,7 +105,7 @@ internal static class BoneMenu
                     break;
             }
         });
-        SetReplayButton(ObsBridge.IsReplayBufferActive());
+        SetReplayButton(ObsBridge.ReplayBufferActive);
         replayPanel.CreateFunction("Save Replay", Color.blue, () =>
         {
             ObsBridge.SaveReplayBuffer();
@@ -123,13 +123,18 @@ internal static class BoneMenu
         foreach (var scene in scenes)
         {
             ModConsole.Msg($"Found scene: {scene.Name}", 1);
-            var func= _scenesPanel.CreateFunction(scene.Name, Color.white, () =>
+            
+            var activeScene = ObsBridge.GetActiveScene();
+            var color = Color.white;
+            if (scene.Name == activeScene) color = Color.cyan;
+            
+            var func= _scenesPanel.CreateFunction(scene.Name, color, () =>
             {
                 ObsBridge.SetScene(scene.Name);
                 NotificationHandler.SceneChanged.Message = $"Scene changed to {scene.Name}";
                 NotificationHandler.SendNotif(NotificationHandler.SceneChanged);
             });
-            SceneButtons.Add(func);
+            SceneButtons.Add(scene.Name, func);
         }
         
         #endregion
@@ -157,6 +162,7 @@ internal static class BoneMenu
         ObsBridge.OnReplayBufferStateChanged += ReplayStatusChanged;
         ObsBridge.OnSceneCreated += SceneCreated;
         ObsBridge.OnSceneRemoved += SceneDeleted;
+        ObsBridge.OnSceneChanged += SceneChanged;
     }
 
     private static void RecordStatusChanged(object sender, RecordStateChangedEventArgs e)
@@ -174,6 +180,17 @@ internal static class BoneMenu
         SetReplayButton(e.OutputState.IsActive);
     }
 
+    private static void SceneChanged(object sender, ProgramSceneChangedEventArgs e)
+    {
+        foreach (var scene in SceneButtons)
+        {
+            scene.Value.ElementColor = Color.white;
+        }
+        
+        var newScene = SceneButtons[e.SceneName];
+        newScene.ElementColor = Color.cyan;
+    }
+
     private static void SceneCreated(object sender, SceneCreatedEventArgs e)
     {
         ModConsole.Msg($"Scene created: {e.SceneName}", 1);
@@ -181,17 +198,21 @@ internal static class BoneMenu
         {
             ObsBridge.SetScene(e.SceneName);
         });
-        SceneButtons.Add(func);
+        SceneButtons.Add(e.SceneName, func);
     }
     
     private static void SceneDeleted(object sender, SceneRemovedEventArgs e)
     {
         ModConsole.Msg($"Scene deleted: {e.SceneName}", 1);
-        foreach (var button in SceneButtons.Where(button => button.ElementName == e.SceneName))
+        var scene = SceneButtons[e.SceneName];
+        if (scene != null)
         {
-            _scenesPanel.Remove(button);
-            SceneButtons.Remove(button);
-            break;
+            _scenesPanel.Remove(scene);
+            SceneButtons.Remove(e.SceneName);
+        }
+        else
+        {
+            ModConsole.Msg($"Scene {e.SceneName} not found in dictionary", 1);
         }
     }
     

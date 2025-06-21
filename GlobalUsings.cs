@@ -7,4 +7,4 @@ global using WeatherElectric.OBSControl.Melon;
 global using BoneLib.BoneMenu;
 global using UnityEngine;
 global using WeatherElectric.OBSControl.Menu;
-global using WeatherElectric.OBSControl.OBS;
+global using WeatherElectric.OBSBridge.OBS;

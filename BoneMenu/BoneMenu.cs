@@ -1,4 +1,6 @@
-﻿using OBSWebsocketDotNet.Types.Events;
+﻿using System.Diagnostics.CodeAnalysis;
+using OBSWebsocketDotNet.Types;
+using OBSWebsocketDotNet.Types.Events;
 using UnityEngine.Diagnostics;
 using WeatherElectric.OBSControl.Handlers;
 
@@ -165,9 +167,28 @@ internal static class BoneMenu
         ObsBridge.OnSceneChanged += SceneChanged;
     }
 
+    [SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly")]
     private static void RecordStatusChanged(object sender, RecordStateChangedEventArgs e)
     {
-        SetRecordButton(e.OutputState.IsActive);
+        switch (e.OutputState.State)
+        {
+            case OutputState.OBS_WEBSOCKET_OUTPUT_STARTING:
+            case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
+                SetRecordButton(true);
+                break;
+            case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPING:
+            case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPED:
+                SetRecordButton(false);
+                break;
+            case OutputState.OBS_WEBSOCKET_OUTPUT_PAUSED:
+                SetPauseButton(true);
+                break;
+            case OutputState.OBS_WEBSOCKET_OUTPUT_RESUMED:
+                SetPauseButton(false);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
     
     private static void StreamStatusChanged(object sender, StreamStateChangedEventArgs e)
